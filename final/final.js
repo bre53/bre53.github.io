@@ -9,14 +9,11 @@ function addTask() {
     return;
   }
 
-  // Create list item
   let li = document.createElement("li");
 
-  // Text span (so we can strike only text)
   let span = document.createElement("span");
   span.textContent = taskText;
 
-  // Complete button
   let completeBtn = document.createElement("button");
   completeBtn.textContent = "Complete";
 
@@ -25,7 +22,6 @@ function addTask() {
     completeBtn.style.display = "none";
   };
 
-  // Delete button
   let deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Delete";
 
@@ -33,22 +29,17 @@ function addTask() {
     li.remove();
   };
 
-  // Add elements to list item
   li.appendChild(span);
   li.appendChild(completeBtn);
   li.appendChild(deleteBtn);
 
-  // Add to page
   document.getElementById("taskList").appendChild(li);
 
-  // Clear input
   input.value = "";
 
-  // AJAX write (simple version)
   saveTasks();
 }
 
-// AJAX (simple example write)
 function saveTasks() {
   let list = document.getElementById("taskList").innerHTML;
 
