@@ -1,8 +1,4 @@
-let tasks = [];
-
 document.getElementById("addBtn").addEventListener("click", addTask);
-
-window.addEventListener("load", loadTasks);
 
 function addTask() {
   let input = document.getElementById("taskInput");
@@ -13,77 +9,51 @@ function addTask() {
     return;
   }
 
-  let task = {
-    text: taskText,
-    completed: false
+  // Create list item
+  let li = document.createElement("li");
+
+  // Text span (so we can strike only text)
+  let span = document.createElement("span");
+  span.textContent = taskText;
+
+  // Complete button
+  let completeBtn = document.createElement("button");
+  completeBtn.textContent = "Complete";
+
+  completeBtn.onclick = function () {
+    span.style.textDecoration = "line-through";
+    completeBtn.style.display = "none";
   };
 
-  tasks.push(task);
+  // Delete button
+  let deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
 
-  renderTasks();
-  saveTasks();
+  deleteBtn.onclick = function () {
+    li.remove();
+  };
 
+  // Add elements to list item
+  li.appendChild(span);
+  li.appendChild(completeBtn);
+  li.appendChild(deleteBtn);
+
+  // Add to page
+  document.getElementById("taskList").appendChild(li);
+
+  // Clear input
   input.value = "";
+
+  // AJAX write (simple version)
+  saveTasks();
 }
 
-function renderTasks() {
-  let list = document.getElementById("taskList");
-  list.innerHTML = "";
-
-  tasks.forEach((task, index) => {
-    let li = document.createElement("li");
-
-    let span = document.createElement("span");
-    span.textContent = task.text;
-
-    if (task.completed) {
-      li.classList.add("completed");
-    }
-
-    let completeBtn = document.createElement("button");
-    completeBtn.textContent = "Complete";
-
-    completeBtn.addEventListener("click", function () {
-      tasks[index].completed = true; // variable change triggers UI change
-      renderTasks();
-      saveTasks();
-    });
-
-    let deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-
-    deleteBtn.addEventListener("click", function () {
-      tasks.splice(index, 1); // update data
-      renderTasks();
-      saveTasks();
-    });
-
-    li.appendChild(span);
-    li.appendChild(completeBtn);
-    li.appendChild(deleteBtn);
-
-    list.appendChild(li);
-  });
-}
-
+// AJAX (simple example write)
 function saveTasks() {
+  let list = document.getElementById("taskList").innerHTML;
+
   fetch("tasks.txt", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(tasks)
+    body: list
   });
-}
-
-function loadTasks() {
-  fetch("tasks.txt")
-    .then(response => response.json())
-    .then(data => {
-      tasks = data || [];
-      renderTasks();
-    })
-    .catch(() => {
-      tasks = [];
-    });
 }
